@@ -1,9 +1,8 @@
-import { Controller, Get, Post, Body, Patch, Param, Delete } from '@nestjs/common';
+import { Controller, Get, Post, Body, Patch, Param, Delete, UseGuards, Request } from '@nestjs/common';
 import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { PartialType } from '@nestjs/swagger';
-import { User } from './entities/user.entity';
+import { AuthGuard } from '@nestjs/passport';
 
 @Controller('user')
 export class UserController {
@@ -17,12 +16,12 @@ export class UserController {
   @Get()
   findAll() {
     return this.userService.findAll();
-    ;
   }
 
-  @Get(':email')
-  findOne(@Param('email') email: string) {
-    return this.userService.findOne(email);
+  @UseGuards(AuthGuard('local'))
+  @Post(':login')
+  async login(@Request() req) {
+    return req.user;
   }
 
   @Patch(':id')
