@@ -3,10 +3,14 @@ import { UserService } from './user.service';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { AuthGuard } from '@nestjs/passport';
+import { AuthService } from 'src/auth/auth.service';
 
 @Controller('user')
 export class UserController {
-  constructor(private readonly userService: UserService) {}
+  constructor(
+    private readonly userService: UserService,
+    private authService: AuthService
+    ) {}
 
   @Post()
   create(@Body() createUserDto: CreateUserDto) {
@@ -21,7 +25,7 @@ export class UserController {
   @Post('login')
   @UseGuards(AuthGuard('local'))
   async login(@Request() req) {
-    return req.user;
+    return this.authService.login(req.user);
   }
 
   @Patch(':id')
