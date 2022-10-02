@@ -18,8 +18,8 @@ export class UserController {
     return this.userService.findAll();
   }
 
+  @Post('login')
   @UseGuards(AuthGuard('local'))
-  @Post(':login')
   async login(@Request() req) {
     return req.user;
   }
