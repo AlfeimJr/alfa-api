@@ -10,8 +10,6 @@ async function bootstrap() {
     .setTitle('Alfa-api')
     .setDescription('API braba')
     .setVersion('1.0')
-    .addTag('User')
-    .addTag('teste')
     .build();
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
