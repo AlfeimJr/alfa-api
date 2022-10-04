@@ -6,14 +6,19 @@ import dotenv from 'dotenv'
 async function bootstrap() {
   const app = await NestFactory.create(AppModule);
   
-  const config = new DocumentBuilder()
+  const config = new DocumentBuilder().addBearerAuth()
     .setTitle('Alfa-api')
     .setDescription('API braba')
     .setVersion('1.0')
     .build();
+    
   const document = SwaggerModule.createDocument(app, config);
   SwaggerModule.setup('api', app, document);
 
+
+  const options = new DocumentBuilder();
   await app.listen(3000);
+
+  
 }
 bootstrap();

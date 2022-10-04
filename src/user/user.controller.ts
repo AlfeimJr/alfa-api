@@ -7,12 +7,11 @@ import { AuthService } from 'src/auth/auth.service';
 import { JwtAuthGuard } from 'src/auth/jwt-auth.guard';
 import {
   ApiBearerAuth,
-  ApiBody,
   ApiOperation,
   ApiResponse,
   ApiTags,
 } from '@nestjs/swagger';
-import { AuthLoginDto } from './dto/auth-login.dto';
+
 
 @ApiBearerAuth()
 @ApiTags('User')
@@ -20,9 +19,8 @@ import { AuthLoginDto } from './dto/auth-login.dto';
 export class UserController {
   constructor(
     private readonly userService: UserService,
-    private authService: AuthService
+    
     ) {}
-  
 
   @ApiOperation({ summary: 'Criar usuário' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
@@ -31,7 +29,7 @@ export class UserController {
     return this.userService.create(createUserDto);
   }
 
-
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Listar usuários' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
   @UseGuards(JwtAuthGuard)
@@ -40,32 +38,19 @@ export class UserController {
     return this.userService.findAll();
   }
 
-  @UseGuards(JwtAuthGuard)
-  @Get('profile')
-  getProfile(@Request() req) {
-    return req.user;
-  }
-
-
   
-  @ApiOperation({ summary: 'Login' })
-  @ApiBody({type : AuthLoginDto})
-  @Post('login')
-  @UseGuards(AuthGuard('local'))
-  async login(@Request() req) {
-    return this.authService.login(req.user);
-  }
-
-  @ApiOperation({ summary: 'Listar usuário pelo id' })
+  @ApiOperation({ summary: 'Editar usuário pelo id' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
-  @Patch(':id')
-  update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
+  @Patch('update/:id')
+  update(@Param('id') id: number, @Body() updateUserDto: UpdateUserDto) {
     return this.userService.update(+id, updateUserDto);
   }
 
 
+  @ApiBearerAuth()
   @ApiOperation({ summary: 'Remover usuário pelo id' })
   @ApiResponse({ status: 403, description: 'Forbidden.' })
+  @UseGuards(JwtAuthGuard)
   @Delete(':id')
   remove(@Param('id') id: string) {
     return this.userService.remove(+id);

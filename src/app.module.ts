@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { forwardRef, Module } from '@nestjs/common';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -6,6 +6,8 @@ import { UserModule } from './user/user.module';
 import { User } from './user/entities/user.entity';
 import { ConfigModule } from '@nestjs/config';
 import { AuthModule } from './auth/auth.module';
+import { LoginService } from './login/login.service';
+import { LoginModule } from './login/login.module';
 @Module({
   imports: [
     ConfigModule.forRoot(),
@@ -20,11 +22,18 @@ import { AuthModule } from './auth/auth.module';
       synchronize: true,
     }),
     AuthModule,
-    
+    LoginModule,
+    TypeOrmModule.forFeature([User]),
   ],
   
     
-  controllers: [AppController],
-  providers: [AppService],
+  controllers: [
+    AppController
+  ],
+  providers: [
+    AppService, 
+    LoginService, 
+    
+  ],
 })
 export class AppModule {}
